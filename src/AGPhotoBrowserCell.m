@@ -122,9 +122,25 @@
 
 - (void)setCellImage:(UIImage *)cellImage
 {
-	[self.zoomableView setImage:cellImage];
-	
-	[self setNeedsUpdateConstraints];
+    [self.zoomableView setImage:cellImage];
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        // set frame as parent view's bounds
+//        self.zoomableView.frame = self.bounds;
+//        
+//        // set bounds based on device orientation
+//        CGFloat w = CGRectGetWidth([[UIScreen mainScreen] bounds]);
+//        CGFloat h = CGRectGetHeight([[UIScreen mainScreen] bounds]);
+//        UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+//        if (UIDeviceOrientationIsLandscape(orientation)) {
+//            self.zoomableView.bounds = CGRectMake(0, 0, h, w);
+//        } else {
+//            self.zoomableView.bounds = CGRectMake(0, 0, w, h);
+//        }
+    }
+    else {
+        [self setNeedsUpdateConstraints];
+    }
 }
 
 
