@@ -143,6 +143,10 @@ const NSInteger AGPhotoBrowserThresholdToCenter = 150;
 
 - (CGFloat)cellHeight
 {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        return CGRectGetWidth(self.currentWindow.frame);
+    }
+    
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 	if (UIDeviceOrientationIsLandscape(orientation)) {
 		return CGRectGetHeight(self.currentWindow.frame);
@@ -480,7 +484,11 @@ const NSInteger AGPhotoBrowserThresholdToCenter = 150;
 			doneFrame = CGRectMake(CGRectGetWidth(tableFrame) - 60 - 10, 15, 60, 32);
 		} else if (orientation == UIDeviceOrientationLandscapeLeft) {
 			overlayFrame = CGRectMake(0, 0, AGPhotoBrowserOverlayInitialHeight, CGRectGetHeight(tableFrame));
-			doneFrame = CGRectMake(CGRectGetWidth(tableFrame) - 32 - 15, CGRectGetHeight(tableFrame) - 10 - 60, 32, 60);
+            
+            doneFrame = CGRectMake(CGRectGetWidth(tableFrame) - 32 - 15, CGRectGetHeight(tableFrame) - 10 - 60, 32, 60);
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+                doneFrame = CGRectMake(CGRectGetHeight(tableFrame) - 32 - 15, CGRectGetWidth(tableFrame) - 10 - 60, 32, 60);
+            }
 		} else {
 			overlayFrame = CGRectMake(CGRectGetWidth(tableFrame) - AGPhotoBrowserOverlayInitialHeight, 0, AGPhotoBrowserOverlayInitialHeight, CGRectGetHeight(tableFrame));
 			doneFrame = CGRectMake(15, 10, 32, 60);
@@ -498,6 +506,8 @@ const NSInteger AGPhotoBrowserThresholdToCenter = 150;
 
 		_changingOrientation = NO;
 	}
+    
+    
 }
 
 - (void)setTransform:(CGAffineTransform)transform andFrame:(CGRect)frame forView:(UIView *)view
@@ -505,8 +515,18 @@ const NSInteger AGPhotoBrowserThresholdToCenter = 150;
 	if (!CGAffineTransformEqualToTransform(view.transform, transform)) {
         view.transform = transform;
     }
-    if (!CGRectEqualToRect(view.frame, frame)) {
-        view.frame = frame;
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        if (![view isEqual:self.photoTableView]) {
+            if (!CGRectEqualToRect(view.frame, frame)) {
+                view.frame = frame;
+            }
+        }
+    }
+    else {
+        if (!CGRectEqualToRect(view.frame, frame)) {
+            view.frame = frame;
+        }
     }
 }
 
